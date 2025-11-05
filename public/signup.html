@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up</title>
+  <style>
+    :root {
+      --bg: #0f172a;        /* slate-900 */
+      --panel: #111827;     /* gray-900 */
+      --muted: #94a3b8;     /* slate-400 */
+      --text: #e5e7eb;      /* gray-200 */
+      --accent: #22c55e;    /* green-500 */
+      --warn: #f59e0b;      /* amber-500 */
+      --danger: #ef4444;    /* red-500 */
+      --link: #60a5fa;      /* blue-400 */
+      --input: #1f2937;     /* gray-800 */
+      --ring: #334155;      /* slate-700 */
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji"; background: radial-gradient(1200px 800px at 20% 10%, #0b1220, var(--bg)); color: var(--text); }
+
+    .wrap { min-height: 100svh; display: grid; place-items: center; padding: 2rem; }
+
+    .card {
+      width: 100%; max-width: 560px; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,.35); backdrop-filter: blur(6px);
+      padding: 1.25rem; overflow: hidden;
+    }
+
+    .card h1 { margin: 0 0 .25rem; font-size: 1.625rem; letter-spacing: .2px; }
+    .muted { color: var(--muted); font-size: .95rem; }
+
+    form { margin-top: 1rem; display: grid; gap: .9rem; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+    @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+
+    label { display: block; font-weight: 600; font-size: .95rem; margin: 0 0 .35rem; }
+
+    input[type="text"], input[type="date"], input[type="tel"], input[type="password"] {
+      width: 100%; padding: .9rem .95rem; border-radius: 12px; border: 1px solid var(--ring); background: var(--input); color: var(--text);
+      outline: none; transition: border-color .15s, box-shadow .15s; font-size: 1rem;
+    }
+    input:focus { border-color: var(--link); box-shadow: 0 0 0 3px rgba(96,165,250,.25); }
+    input::placeholder { color: #94a3b888; }
+
+    .hint { color: var(--muted); font-size: .85rem; margin-top: .35rem; }
+
+    .checklist { display: grid; gap: .25rem; margin-top: .35rem; font-size: .9rem; }
+    .checklist span { display: inline-flex; align-items: center; gap: .5rem; }
+    .checklist .ok { color: var(--accent); }
+    .checklist .warn { color: var(--warn); }
+    .checklist .bad { color: var(--danger); }
+
+    .meter { height: 10px; background: #1f2937; border-radius: 999px; border: 1px solid var(--ring); overflow: hidden; }
+    .bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e); transition: width .2s ease; }
+
+    .actions { display: flex; align-items: center; gap: .75rem; margin-top: .5rem; }
+
+    button[type="submit"] {
+      appearance: none; border: none; background: var(--link); color: #0b1220; font-weight: 700; letter-spacing: .2px;
+      padding: .85rem 1.1rem; border-radius: 12px; cursor: pointer; transition: transform .02s ease-in, filter .15s;
+    }
+    button[disabled] { filter: grayscale(.4) brightness(.8); cursor: not-allowed; }
+    button:active { transform: translateY(1px); }
+
+    .toggle { display: inline-flex; align-items: center; gap: .5rem; font-size: .9rem; user-select: none; }
+
+    .note { margin-top: 1rem; font-size: .9rem; color: var(--muted); }
+
+    .success { margin-top: 1rem; padding: .75rem 1rem; border: 1px solid rgba(34,197,94,.45); background: rgba(34,197,94,.08); color: #bbf7d0; border-radius: 12px; display: none; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card" role="region" aria-labelledby="title">
+      <h1 id="title">Create your account</h1>
+      <p class="muted">Fill in your details. All fields are required.</p>
+
+      <form id="signup" novalidate>
+        <div class="row">
+          <div>
+            <label for="firstName">First name</label>
+            <input id="firstName" name="firstName" type="text" placeholder="Ada" autocomplete="given-name" required />
+          </div>
+          <div>
+            <label for="lastName">Last name</label>
+            <input id="lastName" name="lastName" type="text" placeholder="Lovelace" autocomplete="family-name" required />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="dob">Date of birth</label>
+            <input id="dob" name="dob" type="date" max="2999-12-31" required />
+            <p id="dobHint" class="hint" aria-live="polite"></p>
+          </div>
+          <div>
+            <label for="phone">Phone number</label>
+            <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="07123 456789" pattern="^[+]?\d[\d\s-]{6,}$" autocomplete="tel" required />
+            <p class="hint">Use digits only (spaces/dashes allowed). Example: +447123456789</p>
+          </div>
+        </div>
+
+        <div>
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="new-password" required aria-describedby="pwHelp" />
+          <div class="meter" aria-hidden="true"><div class="bar" id="pwBar"></div></div>
+          <div id="pwHelp" class="checklist" aria-live="polite">
+            <span id="rule-length" class="bad">• At least 12 characters</span>
+            <span id="rule-mix" class="bad">• Uppercase, lowercase, number, and symbol</span>
+            <span id="rule-nonname" class="bad">• Does not contain your name or phone</span>
+            <span id="rule-nospace" class="bad">• No spaces</span>
+          </div>
+          <label class="toggle" style="margin-top:.35rem">
+            <input type="checkbox" id="showPw" /> Show password
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="submit" id="submit" disabled>Sign up</button>
+          <span id="formMsg" class="muted" aria-live="polite"></span>
+        </div>
+
+        <div id="success" class="success" role="status" aria-live="assertive">✅ Signed up successfully! (This demo doesn't send data anywhere.)</div>
+
+        <p class="note">
+          <strong>Password rules:</strong> minimum 12 characters including upper & lower case, numbers, and symbols. It must not contain your first/last name or phone number and cannot include spaces.
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('signup');
+    const submitBtn = document.getElementById('submit');
+    const msg = document.getElementById('formMsg');
+    const success = document.getElementById('success');
+    const pwInput = document.getElementById('password');
+    const pwBar = document.getElementById('pwBar');
+    const showPw = document.getElementById('showPw');
+
+    const ruleLength = document.getElementById('rule-length');
+    const ruleMix = document.getElementById('rule-mix');
+    const ruleNonName = document.getElementById('rule-nonname');
+    const ruleNoSpace = document.getElementById('rule-nospace');
+
+    const firstName = document.getElementById('firstName');
+    const lastName = document.getElementById('lastName');
+    const phone = document.getElementById('phone');
+
+    const dob = document.getElementById('dob');
+    const dobHint = document.getElementById('dobHint');
+
+    function classSwap(el, ok) {
+      el.classList.remove('ok','bad','warn');
+      el.classList.add(ok ? 'ok' : 'bad');
+    }
+
+    function containsPersonal(pw, names, tel) {
+      const clean = (s) => (s || '').toString().toLowerCase().replace(/\s|[-()]/g, '');
+      const p = clean(pw);
+      const parts = [clean(names.first), clean(names.last)];
+      const t = clean(tel);
+      // check full phone and any 4+ digit sequences from phone
+      const phoneChunks = t ? [t, ...Array.from(t.matchAll(/\d{4,}/g)).map(m=>m[0])] : [];
+      return parts.some(n => n && p.includes(n)) || phoneChunks.some(ch => ch && p.includes(ch));
+    }
+
+    function strength(pw, names, tel) {
+      let score = 0;
+      const len = pw.length >= 12;
+      const upper = /[A-Z]/.test(pw);
+      const lower = /[a-z]/.test(pw);
+      const num = /\d/.test(pw);
+      const sym = /[^\w\s]/.test(pw);
+      const nospace = !/\s/.test(pw);
+      const nonname = !containsPersonal(pw, names, tel);
+
+      score += len ? 25 : Math.min(25, pw.length * 2);
+      score += (upper + lower + num + sym) * 12; // up to 48
+      if (nospace) score += 10;
+      if (nonname) score += 17;
+      score = Math.min(100, score);
+
+      // UI rule updates
+      classSwap(ruleLength, len);
+      classSwap(ruleNoSpace, nospace);
+      classSwap(ruleNonName, nonname);
+      const mixOK = upper && lower && num && sym;
+      classSwap(ruleMix, mixOK);
+
+      return { score, allOK: len && mixOK && nospace && nonname };
+    }
+
+    function update() {
+      const names = { first: firstName.value, last: lastName.value };
+      const tel = phone.value;
+      const { score, allOK } = strength(pwInput.value, names, tel);
+      pwBar.style.width = score + '%';
+      submitBtn.disabled = !allOK || !form.checkValidity();
+      msg.textContent = submitBtn.disabled ? 'Complete the requirements to continue.' : '';
+    }
+
+    ['input','blur','keyup','change'].forEach(evt => {
+      [pwInput, firstName, lastName, phone].forEach(el => el.addEventListener(evt, update));
+    });
+
+    showPw.addEventListener('change', () => {
+      pwInput.type = showPw.checked ? 'text' : 'password';
+    });
+
+    dob.addEventListener('change', () => {
+      const v = dob.value;
+      if (!v) { dobHint.textContent = ''; return; }
+      const d = new Date(v);
+      const now = new Date();
+      if (d > now) {
+        dob.setCustomValidity('Birth date cannot be in the future.');
+        dobHint.textContent = 'Birth date cannot be in the future.';
+      } else {
+        dob.setCustomValidity('');
+        dobHint.textContent = '';
+      }
+      update();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+
+      // Build payload for API
+      const payload = {
+        firstName: firstName.value.trim(),
+        lastName: lastName.value.trim(),
+        dob: dob.value, // yyyy-mm-dd
+        phone: phone.value.trim(),
+        password: pwInput.value
+      };
+
+      submitBtn.disabled = true;
+      msg.textContent = 'Creating your account…';
+
+      try {
+        const res = await fetch('/api/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          msg.textContent = data?.error || data?.message || `Request failed (${res.status})`;
+          submitBtn.disabled = false;
+          return;
+        }
+
+        success.style.display = 'block';
+        setTimeout(() => {
+  window.location.assign('/signin.html');
+}, 1200); // show success for ~1.2s, then go
+
+        msg.textContent = '';
+        form.reset();
+        pwBar.style.width = '0%';
+      } catch (err) {
+        msg.textContent = 'Network error. Is the server running on http://localhost:3000 ?';
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Initial paint
+    update();
+  </script>
+</body>
+</html>
